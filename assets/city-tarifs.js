@@ -279,7 +279,69 @@
     if(ca==="devis"){ renderRdv(); var r2=document.getElementById("city-rdv"); if(r2) r2.scrollIntoView({behavior:"smooth",block:"start"}); }
     if(ca==="rdv-send"){ sendRdv(el); }
   }
+  /* CTA du template (« Prendre rendez-vous », « Fixer un rendez-vous ») ->
+     notre formulaire ; menu custom ; le tout en phase capture. */
+  function dedup(t){t=(t||"").split("{")[0].replace(/[«»↗→✕]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+    var h=Math.floor(t.length/2); if(t.length%2===0&&t.slice(0,h)===t.slice(h)) t=t.slice(0,h).trim(); return t;}
+  function goRdv(){ var r=document.getElementById("city-rdv"); if(r){ renderRdv(); r.scrollIntoView({behavior:"smooth",block:"start"}); } }
+  function onCta(e){
+    var host=e.target&&e.target.closest?e.target.closest('a,button,[role="link"],[role="button"]'):null;
+    if(!host) return;
+    if(host.closest('#city-tarifs')||host.closest('#city-rdv')||host.closest('#ct-menu')||host.id==="ct-menu-btn") return;
+    var t=dedup(host.textContent); if(t.length>46) return;
+    if(t.indexOf("prendre rendez")===0||t.indexOf("prendre rend")===0||t.indexOf("fixer un rendez")===0){
+      e.preventDefault(); e.stopImmediatePropagation(); goRdv();
+    }
+  }
   document.addEventListener("click", onAction, true);
+  document.addEventListener("click", onCta, true);
+
+  /* --- sections fantômes du template + « Trusted by Leaders » --- */
+  function hideGhosts(){
+    ["Prix clairs, sans surprise","Senior-level quality"].forEach(function(txt){
+      var l=findLeaf(txt); if(l){ var s=sectionOf(l); if(s&&s.id!=="city-tarifs"&&s.id!=="city-rdv") s.style.setProperty("display","none","important"); }
+    });
+    var tb=findLeaf("Trusted by Leaders");
+    if(tb){
+      var p=tb, k=0;
+      while(p&&k<6){ if(p.querySelector&&p.querySelector("img")){ p.style.setProperty("display","none","important"); break; } p=p.parentElement; k++; }
+      if(p===null||k===6) tb.style.setProperty("display","none","important");
+    }
+  }
+
+  /* --- menu CityPhone (recouvre le hamburger anglais du template) --- */
+  function buildMenu(){
+    if(location.pathname.indexOf('/tarifs')>=0) return;
+    if(document.getElementById("ct-menu-btn")) return;
+    var btn=document.createElement("button"); btn.id="ct-menu-btn"; btn.setAttribute("aria-label","Menu");
+    btn.innerHTML='<span><span class="l"></span><span class="l"></span></span>';
+    var ov=document.createElement("div"); ov.id="ct-menu";
+    ov.innerHTML='<div class="ct-menu-card">'+
+      '<button class="ct-menu-item" data-menu="top">Accueil</button>'+
+      '<button class="ct-menu-item" data-menu="services">Nos services</button>'+
+      '<button class="ct-menu-item" data-menu="tarifs">Tarifs</button>'+
+      '<button class="ct-menu-item" data-menu="rdv">Rendez-vous</button>'+
+      '<button class="ct-menu-item" data-menu="apropos">À propos</button>'+
+      '<button class="ct-menu-item" data-menu="page-tarifs">Tous les tarifs ↗</button>'+
+      '<button class="ct-menu-tel" data-menu="rdv">📅 Prendre rendez-vous</button>'+
+    '</div>';
+    document.body.appendChild(btn); document.body.appendChild(ov);
+    function close(){ ov.classList.remove("on"); btn.classList.remove("on"); }
+    btn.addEventListener("click",function(e){ e.preventDefault(); e.stopImmediatePropagation();
+      ov.classList.toggle("on"); btn.classList.toggle("on"); },true);
+    ov.addEventListener("click",function(e){
+      var it=e.target.closest("[data-menu]");
+      if(!it){ if(e.target===ov) close(); return; }
+      e.preventDefault(); e.stopImmediatePropagation();
+      var m=it.dataset.menu; close();
+      if(m==="top") window.scrollTo({top:0,behavior:"smooth"});
+      if(m==="services"){ var l=findLeaf("Rachat de votre téléphone"); if(l) sectionOf(l).scrollIntoView({behavior:"smooth"}); }
+      if(m==="tarifs"){ var t=document.getElementById("city-tarifs"); if(t) t.scrollIntoView({behavior:"smooth"}); }
+      if(m==="rdv") goRdv();
+      if(m==="apropos"){ var a=findLeaf("À propos de City")||findLeaf("Depuis 2015"); if(a) sectionOf(a).scrollIntoView({behavior:"smooth"}); }
+      if(m==="page-tarifs") location.assign(BASE+"/tarifs/");
+    },true);
+  }
 
   /* ============ insertion / auto-réparation ============ */
   function sectionOf(el){
@@ -356,8 +418,8 @@
     var fonts=document.createElement("link"); fonts.rel="stylesheet";
     fonts.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
     document.head.appendChild(fonts);
-    ensure(); fixText(); hideBadge();
-    setInterval(function(){ ensure(); fixText(); hideBadge(); },1500);
+    ensure(); fixText(); hideBadge(); hideGhosts(); buildMenu();
+    setInterval(function(){ ensure(); fixText(); hideBadge(); hideGhosts(); buildMenu(); },1500);
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
 })();
