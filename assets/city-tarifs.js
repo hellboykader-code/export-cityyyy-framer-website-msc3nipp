@@ -1,13 +1,17 @@
 /* ============================================================
-   CityPhone & Vape — section Tarifs (portée du site « amine » / MK,
-   même design, même catalogue). JS vanilla injecté après hydratation
-   Framer, auto-réparant (le React de Framer peut reconstruire le DOM).
+   CityPhone & Vape — Tarifs + Rendez-vous (style du site).
+   JS vanilla injecté après hydratation Framer, auto-réparant.
+   Clics pilotés par DÉLÉGATION GLOBALE en phase capture (les
+   listeners par nœud sont peu fiables dans un arbre Framer).
+   ⚠️ CONTACT ci-dessous = PLACEHOLDER à remplacer par les vraies
+   coordonnées de la boutique.
    ============================================================ */
 (function(){
   "use strict";
   var sc=document.currentScript, BASE=(sc&&sc.src?sc.src.split('/assets/')[0]:'');
   var IMG=function(p){return BASE+'/assets'+p.replace('IMGBASE','');};
 
+  var CONTACT={tel:"07 00 00 00 00",telLink:"+33700000000",email:"contact@cityphone-creteil.fr"};
   var CATALOGUE=[
   // Apple / iPhone
   { marque: "Apple", modele: "iPhone 16 Pro Max", ecran: 234, batterie: 84, charge: 74, camera: 104, vitre: 134, desox: 64 },
@@ -121,30 +125,29 @@
   "iPad mini": "IMGBASE/img/models/by-model/ipad-mini.png"
 };
   Object.keys(MODEL_IMAGES).forEach(function(k){ MODEL_IMAGES[k]=IMG(MODEL_IMAGES[k]); });
+  var CRENEAUX=["09:00 – 10:00","10:00 – 11:00","11:00 – 12:00","14:00 – 15:00","15:00 – 16:00","16:00 – 17:00","17:00 – 18:00"];
 
-  var MARQUE_STYLE={Apple:{c:"#1d1d1f",abbr:"🍎"},Samsung:{c:"#1428a0",abbr:"SA"},Xiaomi:{c:"#ff6900",abbr:"MI"},Huawei:{c:"#cf0a2c",abbr:"HW"},Google:{c:"#4285f4",abbr:"G"},iPad:{c:"#555555",abbr:"iP"}};
+  var MARQUE_STYLE={Apple:{abbr:"🍎"},Samsung:{abbr:"SA"},Xiaomi:{abbr:"MI"},Huawei:{abbr:"HW"},Google:{abbr:"G"},iPad:{abbr:"iP"}};
   var MARQUE_IMG={Apple:IMG("IMGBASE/img/models/apple.jpg"),Samsung:IMG("IMGBASE/img/models/samsung.jpg"),Xiaomi:IMG("IMGBASE/img/models/xiaomi.jpg"),Huawei:IMG("IMGBASE/img/models/huawei.jpg"),Google:IMG("IMGBASE/img/models/google.jpg"),iPad:IMG("IMGBASE/img/models/ipad.png")};
   var MARQUES=[]; CATALOGUE.forEach(function(m){ if(MARQUES.indexOf(m.marque)<0) MARQUES.push(m.marque); });
   var state={marque:null,recherche:""};
+  var rdv={marque:MARQUES[0],modele:"",rep:"ecran"};
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
   function abbr(m){return (MARQUE_STYLE[m]||{}).abbr||m.slice(0,2).toUpperCase();}
   function countModeles(m){return CATALOGUE.filter(function(x){return x.marque===m;}).length;}
+  function modelesDe(m){return CATALOGUE.filter(function(x){return x.marque===m;});}
 
-  /* --- bouton « Réserver » : déclenche le même parcours que le CTA du site --- */
-  function dedup(t){t=(t||"").split("{")[0].replace(/[«»↗→]/g,"").replace(/\s+/g," ").trim().toLowerCase();
-    var h=Math.floor(t.length/2); if(t.length%2===0&&t.slice(0,h)===t.slice(h)) t=t.slice(0,h).trim(); return t;}
-  function reserver(){
-    var els=document.querySelectorAll('a,button,[role="link"],[role="button"]');
-    for(var i=0;i<els.length;i++){
-      var el=els[i]; if(el.closest('#city-tarifs')) continue;
-      var t=dedup(el.textContent); if(t.length>42) continue;
-      if(t.indexOf("prendre rendez")===0||t.indexOf("prendre rend")===0){ el.click(); el.scrollIntoView({behavior:"smooth",block:"center"}); return; }
-    }
-    var f=document.querySelector("footer")||document.body.lastElementChild; if(f) f.scrollIntoView({behavior:"smooth"});
+  /* ============ TARIFS ============ */
+  function rowsHTML(modeles){
+    if(modeles.length===0) return '<tr><td class="na" colspan="'+(TYPES_REPARATION.length+2)+'">Aucun modèle trouvé.</td></tr>';
+    return modeles.map(function(m){
+      return '<tr><td class="ct-model"><img class="ct-thumb" src="'+(MODEL_IMAGES[m.modele]||MARQUE_IMG[m.marque])+'" alt="Téléphone '+esc(m.modele)+'" loading="lazy"><span>'+esc(m.modele)+'</span></td>'+
+        TYPES_REPARATION.map(function(t){var v=m[t.cle];return '<td class="'+(v==null?"na":"prix")+'">'+(v==null?"—":v+" €")+'</td>';}).join("")+
+        '<td><button class="ct-reserver" data-ca="reserve" data-m="'+esc(m.marque)+'" data-mod="'+esc(m.modele)+'">Réserver</button></td></tr>';
+    }).join("");
   }
-
-  function render(){
+  function renderTarifs(){
     var sec=document.getElementById("city-tarifs"); if(!sec) return;
     var h="";
     if(!state.marque){
@@ -152,111 +155,194 @@
         '<h2 class="ct-title">Choisissez votre marque</h2>'+
         '<p class="ct-lead">Sélectionnez la marque de votre appareil pour voir le tarif de chaque modèle. Des prix <strong>30 à 40 € moins chers que la concurrence</strong>.</p>'+
         '<div class="ct-brands">'+MARQUES.map(function(m){
-          return '<button class="ct-brand" data-m="'+esc(m)+'" style="--bc:'+((MARQUE_STYLE[m]||{}).c||"#2563eb")+'">'+
+          return '<button class="ct-brand" data-ca="brand" data-m="'+esc(m)+'">'+
             '<span class="ct-brand__logo">'+abbr(m)+'</span>'+
             '<span class="ct-brand__name">'+esc(m)+'</span>'+
-            '<span class="ct-brand__count">'+countModeles(m)+' modèles</span>'+
-            '<span class="ct-brand__go">Voir les modèles →</span></button>';
+            '<span class="ct-brand__count">'+countModeles(m)+' modèles</span></button>';
         }).join("")+'</div>'+
-        (location.pathname.indexOf('/tarifs')<0?'<a class="ct-page" href="'+BASE+'/tarifs/">Voir la page Tarifs complète ↗</a>':'');
+        (location.pathname.indexOf('/tarifs')<0?'<span class="ct-page" role="link" tabindex="0" data-ca="nav" data-href="'+BASE+'/tarifs/">Voir la page Tarifs complète ↗</span>':'');
     } else {
       var q=state.recherche.trim().toLowerCase();
-      var modeles=CATALOGUE.filter(function(m){return m.marque===state.marque&&(q===""||m.modele.toLowerCase().indexOf(q)>=0);});
-      h='<button class="ct-btn ct-back">← Toutes les marques</button>'+
-        '<div class="ct-head"><div class="ct-head__photo" style="--bc:'+((MARQUE_STYLE[state.marque]||{}).c||"#2563eb")+'">'+
+      var modeles=modelesDe(state.marque).filter(function(m){return q===""||m.modele.toLowerCase().indexOf(q)>=0;});
+      h='<button class="ct-btn" data-ca="back">← Toutes les marques</button>'+
+        '<div class="ct-head"><div class="ct-head__photo">'+
           '<img src="'+MARQUE_IMG[state.marque]+'" alt="Téléphone '+esc(state.marque)+'" loading="lazy"></div>'+
         '<div><h2 class="ct-title" style="margin-top:0">Réparations '+esc(state.marque)+'</h2>'+
-        '<p class="ct-lead" style="margin-bottom:0">Tarifs par modèle, pièce et main-d’œuvre comprises — 30 à 40 € moins chers que la concurrence. Cliquez sur « Réserver » pour prendre rendez-vous.</p></div></div>'+
+        '<p class="ct-lead" style="margin-bottom:0">Tarifs par modèle, pièce et main-d’œuvre comprises. Cliquez sur « Réserver » pour prendre rendez-vous.</p></div></div>'+
         '<div class="ct-bar"><input type="search" placeholder="Rechercher un modèle '+esc(state.marque)+'…" value="'+esc(state.recherche)+'"></div>'+
         '<div class="ct-tablewrap"><table class="ct-table"><thead><tr><th>Modèle</th>'+
-        TYPES_REPARATION.map(function(t){return '<th>'+esc(t.nom)+'</th>';}).join("")+'<th></th></tr></thead><tbody>'+
-        (modeles.length===0?'<tr><td class="na" colspan="'+(TYPES_REPARATION.length+2)+'">Aucun modèle trouvé.</td></tr>':
-          modeles.map(function(m){
-            return '<tr><td class="ct-model"><img class="ct-thumb" src="'+(MODEL_IMAGES[m.modele]||MARQUE_IMG[m.marque])+'" alt="Téléphone '+esc(m.modele)+'" loading="lazy"><span>'+esc(m.modele)+'</span></td>'+
-              TYPES_REPARATION.map(function(t){var v=m[t.cle];return '<td class="'+(v==null?"na":"prix")+'">'+(v==null?"—":v+" €")+'</td>';}).join("")+
-              '<td><button class="ct-reserver">Réserver</button></td></tr>';
-          }).join(""))+
-        '</tbody></table></div>'+
+        TYPES_REPARATION.map(function(t){return '<th>'+esc(t.nom)+'</th>';}).join("")+'<th></th></tr></thead>'+
+        '<tbody>'+rowsHTML(modeles)+'</tbody></table></div>'+
         '<p class="ct-note">🛡️ '+esc(GARANTIE)+'.</p>'+
-        '<p class="ct-note">Modèle non listé ou réparation spécifique (carte mère, haut-parleur, micro…) ? <button class="ct-link">Demandez un devis gratuit</button>.</p>';
+        '<p class="ct-note">Modèle non listé ou réparation spécifique (carte mère, haut-parleur, micro…) ? <button class="ct-link" data-ca="devis">Demandez un devis gratuit</button>.</p>';
     }
     sec.innerHTML='<div class="ct-container">'+h+'</div>';
-    sec.querySelectorAll(".ct-brand").forEach(function(b){ b.addEventListener("click",function(){ state.marque=b.getAttribute("data-m"); state.recherche=""; render(); sec.scrollIntoView({behavior:"smooth",block:"start"}); }); });
-    var back=sec.querySelector(".ct-back"); if(back) back.addEventListener("click",function(){ state.marque=null; render(); });
-    var inp=sec.querySelector('.ct-bar input'); if(inp){ inp.addEventListener("input",function(){ state.recherche=inp.value;
-      var tb=sec.querySelector("tbody"); if(tb){ var q=state.recherche.trim().toLowerCase();
-        var modeles=CATALOGUE.filter(function(m){return m.marque===state.marque&&(q===""||m.modele.toLowerCase().indexOf(q)>=0);});
-        tb.innerHTML=(modeles.length===0?'<tr><td class="na" colspan="'+(TYPES_REPARATION.length+2)+'">Aucun modèle trouvé.</td></tr>':
-          modeles.map(function(m){
-            return '<tr><td class="ct-model"><img class="ct-thumb" src="'+(MODEL_IMAGES[m.modele]||MARQUE_IMG[m.marque])+'" alt="" loading="lazy"><span>'+esc(m.modele)+'</span></td>'+
-              TYPES_REPARATION.map(function(t){var v=m[t.cle];return '<td class="'+(v==null?"na":"prix")+'">'+(v==null?"—":v+" €")+'</td>';}).join("")+
-              '<td><button class="ct-reserver">Réserver</button></td></tr>';}).join(""));
-        tb.querySelectorAll(".ct-reserver").forEach(function(b){ b.addEventListener("click",reserver); }); } }); }
-    sec.querySelectorAll(".ct-reserver,.ct-link").forEach(function(b){ b.addEventListener("click",reserver); });
+    var inp=sec.querySelector('.ct-bar input');
+    if(inp){ inp.addEventListener("input",function(){ state.recherche=inp.value;
+      var tb=sec.querySelector("tbody"); if(!tb) return;
+      var q2=state.recherche.trim().toLowerCase();
+      tb.innerHTML=rowsHTML(modelesDe(state.marque).filter(function(m){return q2===""||m.modele.toLowerCase().indexOf(q2)>=0;}));
+    }); }
   }
 
-  /* --- insertion : juste APRÈS la section services (« Hello! Réparation /
-     Rachat / Reconditionnés ») et donc AVANT « Notre méthode ».
-     On remonte jusqu'au bloc dont le parent contient plusieurs sections
-     (fiable même quand l'hydratation enveloppe tout dans un seul wrapper). --- */
+  /* ============ RENDEZ-VOUS ============ */
+  function repOptions(){
+    var md=CATALOGUE.find(function(m){return m.modele===rdv.modele;});
+    return TYPES_REPARATION.map(function(t){
+      var p=md?md[t.cle]:null;
+      return '<option value="'+t.cle+'"'+(rdv.rep===t.cle?' selected':'')+'>'+esc(t.nom)+(p==null?' — sur devis':' — '+p+' €')+'</option>';
+    }).join("");
+  }
+  function estimationHTML(){
+    var md=CATALOGUE.find(function(m){return m.modele===rdv.modele;});
+    var p=md?md[rdv.rep]:null;
+    return p!=null
+      ? 'Estimation : <strong>'+p+' €</strong> <span class="cr-muted">(pièce et pose comprises · devis confirmé en boutique)</span>'
+      : 'Cette réparation est établie <strong>sur devis gratuit</strong>.';
+  }
+  function renderRdv(){
+    var sec=document.getElementById("city-rdv"); if(!sec) return;
+    var today=new Date().toISOString().split("T")[0];
+    var mods=modelesDe(rdv.marque);
+    if(!mods.some(function(m){return m.modele===rdv.modele;})) rdv.modele=mods[0]?mods[0].modele:"";
+    sec.innerHTML='<div class="ct-container"><div class="cr-grid">'+
+      '<div class="cr-intro">'+
+        '<p class="ct-eyebrow">Rendez-vous</p>'+
+        '<h2 class="ct-title">Réservez votre créneau</h2>'+
+        '<p class="ct-lead">Choisissez votre appareil, la réparation et un créneau. Nous vous confirmons par téléphone — gratuit et sans engagement.</p>'+
+        '<ul class="cr-points"><li>Confirmation rapide par téléphone</li><li>Devis clair avant toute intervention</li><li>Aucun frais si vous ne réparez pas</li></ul>'+
+      '</div>'+
+      '<form class="cr-form" novalidate>'+
+        '<div class="cr-field"><label>Nom complet *</label><input name="nom" type="text"></div>'+
+        '<div class="cr-row">'+
+          '<div class="cr-field"><label>Téléphone *</label><input name="tel" type="tel" placeholder="06 12 34 56 78"></div>'+
+          '<div class="cr-field"><label>E-mail</label><input name="email" type="email" placeholder="vous@exemple.fr"></div>'+
+        '</div>'+
+        '<div class="cr-row">'+
+          '<div class="cr-field"><label>Marque *</label><select name="marque" data-cr="marque">'+MARQUES.map(function(m){return '<option'+(rdv.marque===m?' selected':'')+'>'+esc(m)+'</option>';}).join("")+'</select></div>'+
+          '<div class="cr-field"><label>Modèle *</label><select name="modele" data-cr="modele">'+mods.map(function(m){return '<option'+(rdv.modele===m.modele?' selected':'')+'>'+esc(m.modele)+'</option>';}).join("")+'</select></div>'+
+        '</div>'+
+        '<div class="cr-field"><label>Réparation *</label><select name="reparation" data-cr="rep">'+repOptions()+'</select></div>'+
+        '<div class="cr-row">'+
+          '<div class="cr-field"><label>Date souhaitée *</label><input name="date" type="date" min="'+today+'"></div>'+
+          '<div class="cr-field"><label>Créneau *</label><select name="creneau"><option value="">—</option>'+CRENEAUX.map(function(c){return '<option>'+c+'</option>';}).join("")+'</select></div>'+
+        '</div>'+
+        '<div class="cr-field"><label>Message (facultatif)</label><textarea name="message" rows="3" placeholder="Décrivez la panne…"></textarea></div>'+
+        '<div class="cr-estimation" data-cr-est>'+estimationHTML()+'</div>'+
+        '<button type="button" class="cr-submit" data-ca="rdv-send">Confirmer le rendez-vous</button>'+
+        '<p class="cr-confirm" data-cr-confirm hidden></p>'+
+      '</form>'+
+    '</div></div>';
+    sec.querySelectorAll('[data-cr]').forEach(function(el){
+      el.addEventListener("change",function(){
+        if(el.dataset.cr==="marque"){ rdv.marque=el.value; rdv.modele=""; renderRdv(); }
+        if(el.dataset.cr==="modele"){ rdv.modele=el.value; refreshEst(sec); }
+        if(el.dataset.cr==="rep"){ rdv.rep=el.value; refreshEst(sec); }
+      });
+    });
+  }
+  function refreshEst(sec){
+    var repSel=sec.querySelector('[data-cr="rep"]'); if(repSel){ repSel.innerHTML=repOptions(); repSel.value=rdv.rep; }
+    var est=sec.querySelector('[data-cr-est]'); if(est) est.innerHTML=estimationHTML();
+  }
+  function sendRdv(btn){
+    var form=btn.closest("form"); if(!form) return;
+    var d={}; form.querySelectorAll("input,select,textarea").forEach(function(el){ d[el.name]=el.value; });
+    var box=form.querySelector('[data-cr-confirm]');
+    if(!d.nom||!d.tel||!d.modele||!d.date||!d.creneau){
+      box.hidden=false; box.className="cr-confirm error"; box.textContent="Merci de remplir tous les champs obligatoires (*).";
+      return;
+    }
+    var md=CATALOGUE.find(function(m){return m.modele===d.modele;});
+    var repNom=(TYPES_REPARATION.find(function(t){return t.cle===d.reparation;})||{}).nom||d.reparation;
+    var prix=md&&md[d.reparation]!=null?md[d.reparation]+" €":"sur devis";
+    var corps="Nom: "+d.nom+"\nTéléphone: "+d.tel+"\nE-mail: "+(d.email||"—")+"\nAppareil: "+d.marque+" "+d.modele+"\nRéparation: "+repNom+" ("+prix+")\nDate: "+d.date+" — Créneau: "+d.creneau+"\nMessage: "+(d.message||"—");
+    var mailto="mailto:"+CONTACT.email+"?subject="+encodeURIComponent("Demande de RDV — "+d.marque+" "+d.modele)+"&body="+encodeURIComponent(corps);
+    box.hidden=false; box.className="cr-confirm";
+    box.innerHTML="✅ Merci "+esc(d.nom.split(" ")[0])+" ! Votre demande pour « "+esc(repNom)+" » ("+esc(d.marque)+" "+esc(d.modele)+", le "+esc(d.date)+" — "+esc(d.creneau)+") est enregistrée. Nous vous confirmons par téléphone. <a href=\""+mailto+"\">Envoyer aussi par e-mail →</a>";
+    box.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+
+  /* ============ délégation globale (phase capture) ============ */
+  function onAction(e){
+    var el=e.target&&e.target.closest?e.target.closest('[data-ca]'):null;
+    if(!el) return;
+    if(!el.closest('#city-tarifs')&&!el.closest('#city-rdv')) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    var ca=el.dataset.ca;
+    if(ca==="brand"){ state.marque=el.dataset.m; state.recherche=""; renderTarifs();
+      var s=document.getElementById("city-tarifs"); if(s) s.scrollIntoView({behavior:"smooth",block:"start"}); }
+    if(ca==="back"){ state.marque=null; renderTarifs(); }
+    if(ca==="nav"){ location.assign(el.dataset.href); }
+    if(ca==="reserve"){ rdv.marque=el.dataset.m; rdv.modele=el.dataset.mod; rdv.rep="ecran"; renderRdv();
+      var r=document.getElementById("city-rdv"); if(r) r.scrollIntoView({behavior:"smooth",block:"start"}); }
+    if(ca==="devis"){ renderRdv(); var r2=document.getElementById("city-rdv"); if(r2) r2.scrollIntoView({behavior:"smooth",block:"start"}); }
+    if(ca==="rdv-send"){ sendRdv(el); }
+  }
+  document.addEventListener("click", onAction, true);
+
+  /* ============ insertion / auto-réparation ============ */
   function sectionOf(el){
     var p=el;
-    while(p.parentElement){
-      var par=p.parentElement;
-      if(par.children.length>=4) return p;
-      p=par;
-    }
+    while(p.parentElement){ if(p.parentElement.children.length>=4) return p; p=p.parentElement; }
     return el;
   }
-  function findAnchor(){
+  function findLeaf(txt){
     var els=document.querySelectorAll("h1,h2,h3,h4,p,span,div");
-    // 1) repère PRIORITAIRE : la section services (texte unique « Rachat de votre téléphone »)
     for(var i=0;i<els.length;i++){
+      if(els[i].closest('#city-tarifs')||els[i].closest('#city-rdv')) continue;
       if(els[i].children.length>0) continue;
       var t=(els[i].textContent||"").replace(/\s+/g," ").trim();
-      if(t.indexOf("Rachat de votre téléphone")===0) return sectionOf(els[i]);
-    }
-    // 2) repli : insérer avant la section « Notre méthode » (on renvoie la section précédente)
-    for(var j=0;j<els.length;j++){
-      var t2=(els[j].textContent||"").replace(/\s+/g," ").trim();
-      if(t2.indexOf("Notre méthode")===0||t2.indexOf("Comment ça marche")===0){
-        var secM=sectionOf(els[j]);
-        return secM.previousElementSibling||secM;
-      }
+      if(t.indexOf(txt)===0) return els[i];
     }
     return null;
   }
-  function ensure(){
-    var ex=document.getElementById("city-tarifs");
+  function anchorTarifs(){
+    var l=findLeaf("Rachat de votre téléphone"); if(l) return sectionOf(l);
+    var m=findLeaf("Notre méthode")||findLeaf("Comment ça marche");
+    if(m){ var s=sectionOf(m); return s.previousElementSibling||s; }
+    return null;
+  }
+  function anchorRdv(){
+    var m=findLeaf("Notre méthode")||findLeaf("Comment ça marche");
+    if(m) return sectionOf(m);
+    return document.getElementById("city-tarifs");
+  }
+  function place(id, getAnchor, renderFn){
+    var ex=document.getElementById(id);
     if(ex){
-      if(!ex.firstChild) render();
-      var a0=findAnchor();
-      if(a0&&a0.parentNode&&a0.nextElementSibling!==ex&&a0!==ex){ a0.parentNode.insertBefore(ex, a0.nextSibling); }
+      if(!ex.firstChild) renderFn();
+      var a=getAnchor();
+      if(a&&a.parentNode&&a!==ex&&a.nextElementSibling!==ex) a.parentNode.insertBefore(ex, a.nextSibling);
       return;
     }
-    var anchor=findAnchor(); if(!anchor||!anchor.parentNode) return;
-    var sec=document.createElement("section"); sec.id="city-tarifs";
-    anchor.parentNode.insertBefore(sec, anchor.nextSibling);
-    render();
+    var a2=getAnchor(); if(!a2||!a2.parentNode) return;
+    var sec=document.createElement("section"); sec.id=id;
+    a2.parentNode.insertBefore(sec, a2.nextSibling);
+    renderFn();
+  }
+  function ensure(){
+    place("city-tarifs", anchorTarifs, renderTarifs);
+    place("city-rdv", anchorRdv, renderRdv);
   }
 
-  /* --- filet post-hydratation : Hanzo -> CityPhone + faute « rend-vous » --- */
+  /* ============ filets post-hydratation ============ */
   function fixText(){
     var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
     var n; while((n=w.nextNode())){
-      if(n.parentElement&&n.parentElement.closest("#city-tarifs")) continue;
+      if(n.parentElement&&(n.parentElement.closest("#city-tarifs")||n.parentElement.closest("#city-rdv"))) continue;
       var t=n.nodeValue; if(!t) continue;
       if(/Hanzo/.test(t)){ n.nodeValue=t.replace(/Hanzo Studio/g,"CityPhone & Vape").replace(/Hanzo, Founder/g,"CityPhone & Vape — Créteil").replace(/Hanzo/g,"CityPhone"); }
       else if(t.indexOf("Prendre rend-vous")>=0){ n.nodeValue=t.replace(/Prendre rend-vous/g,"Prendre rendez-vous"); }
     }
-    if(!/CityPhone/.test(document.title)) document.title="CityPhone & Vape — Réparation de téléphones à Créteil";
+    if(!/CityPhone/.test(document.title)&&location.pathname.indexOf('/tarifs')<0) document.title="CityPhone & Vape — Réparation de téléphones à Créteil";
   }
-
   function hideBadge(){
-    if(document.getElementById("ct-nobadge")) return;
-    var st=document.createElement("style"); st.id="ct-nobadge";
-    st.textContent='#__framer-badge-container,a[href*="framer.link"],div[class*="framer-badge"]{display:none!important}';
-    document.head.appendChild(st);
+    if(!document.getElementById("ct-nobadge")){
+      var st=document.createElement("style"); st.id="ct-nobadge";
+      st.textContent='#__framer-badge-container,a[href*="framer.link"],div[class*="framer-badge"]{display:none!important}';
+      document.head.appendChild(st);
+    }
     document.querySelectorAll('a[href*="framer.link"],a[href*="framer.com"]').forEach(function(a){
       var t=(a.textContent||"").toLowerCase();
       if(t.indexOf("remix")>=0||t.indexOf("framer")>=0||t.indexOf("template")>=0){
@@ -268,10 +354,10 @@
   }
   function boot(){
     var fonts=document.createElement("link"); fonts.rel="stylesheet";
-    fonts.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap";
+    fonts.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
     document.head.appendChild(fonts);
-    ensure(); fixText();
-    hideBadge(); setInterval(function(){ ensure(); fixText(); hideBadge(); },1500);
+    ensure(); fixText(); hideBadge();
+    setInterval(function(){ ensure(); fixText(); hideBadge(); },1500);
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
 })();
