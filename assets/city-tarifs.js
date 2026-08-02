@@ -157,7 +157,8 @@
             '<span class="ct-brand__name">'+esc(m)+'</span>'+
             '<span class="ct-brand__count">'+countModeles(m)+' modèles</span>'+
             '<span class="ct-brand__go">Voir les modèles →</span></button>';
-        }).join("")+'</div>';
+        }).join("")+'</div>'+
+        (location.pathname.indexOf('/tarifs')<0?'<a class="ct-page" href="'+BASE+'/tarifs/">Voir la page Tarifs complète ↗</a>':'');
     } else {
       var q=state.recherche.trim().toLowerCase();
       var modeles=CATALOGUE.filter(function(m){return m.marque===state.marque&&(q===""||m.modele.toLowerCase().indexOf(q)>=0);});
@@ -208,7 +209,8 @@
     return null;
   }
   function ensure(){
-    if(document.getElementById("city-tarifs")) return;
+    var ex=document.getElementById("city-tarifs");
+    if(ex){ if(!ex.firstChild) render(); return; }
     var anchor=findAnchor(); if(!anchor||!anchor.parentNode) return;
     var sec=document.createElement("section"); sec.id="city-tarifs";
     anchor.parentNode.insertBefore(sec, anchor.nextSibling);

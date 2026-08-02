@@ -1,73 +1,93 @@
 /* ============================================================
-   Section Tarifs — CityPhone & Vape
-   Design repris à l'identique du site « amine » (MK), portée
-   sous #city-tarifs pour ne pas toucher aux styles Framer.
+   Section & page Tarifs — CityPhone & Vape
+   Style hérité du site lui-même (template Hanzo customisé) :
+   fond gris clair #d9d9d9, titres "Inter Display" 400 très serrés,
+   pastilles/pills, cartes blanches arrondies, boutons noirs.
+   Portée sous #city-tarifs pour ne pas toucher aux styles Framer.
    ============================================================ */
 #city-tarifs{
-  --bg-alt:#f6f7f9; --line:#e7e9ee; --line-strong:#d7dbe2; --text:#0d1117;
-  --muted:#6b7480; --accent:#2563eb; --accent-dark:#1d4ed8; --accent-soft:#eff4ff;
-  --radius:14px; --shadow-sm:0 1px 2px rgba(16,24,40,.05); --shadow:0 18px 50px rgba(16,24,40,.10);
-  display:block; background:var(--bg-alt); color:var(--text);
-  font-family:"Inter",system-ui,-apple-system,sans-serif; line-height:1.65;
-  padding:clamp(3.5rem,7vw,6rem) 0; text-align:left;
+  --ink:#000; --ink-50:rgba(0,0,0,.5); --ink-30:rgba(0,0,0,.3);
+  --bg:#d9d9d9; --card:#fff; --line:rgba(0,0,0,.08);
+  display:block; background:var(--bg); color:var(--ink);
+  font-family:"Inter","Inter Display",system-ui,-apple-system,sans-serif;
+  line-height:1.6; padding:clamp(60px,8vw,110px) 0; text-align:left;
 }
 #city-tarifs *{box-sizing:border-box;margin:0;padding:0}
-#city-tarifs .ct-container{width:min(1180px,92%);margin-inline:auto}
-#city-tarifs .ct-eyebrow{display:inline-block;color:var(--accent);font-weight:600;letter-spacing:.03em;
-  text-transform:uppercase;font-size:.72rem;background:var(--accent-soft);border-radius:999px;padding:.3rem .8rem}
-#city-tarifs .ct-title{font-family:"Space Grotesk","Inter",sans-serif;font-size:clamp(1.8rem,3.8vw,2.6rem);font-weight:700;margin:.8rem 0 1rem;color:var(--text)}
-#city-tarifs .ct-lead{color:var(--muted);max-width:640px;margin-bottom:2rem;font-size:1rem}
-#city-tarifs .ct-lead strong{color:var(--text)}
+#city-tarifs .ct-container{width:min(1200px,92%);margin-inline:auto}
 
-/* cartes marques */
-#city-tarifs .ct-brands{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.1rem;margin-top:2rem}
-#city-tarifs .ct-brand{position:relative;text-align:left;cursor:pointer;background:#fff;border:1px solid var(--line);
-  border-radius:var(--radius);padding:1.4rem;display:flex;flex-direction:column;gap:.35rem;
-  box-shadow:var(--shadow-sm);transition:transform .18s ease,box-shadow .2s ease,border-color .2s ease;
-  overflow:hidden;font:inherit;color:var(--text)}
-#city-tarifs .ct-brand::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--bc)}
-#city-tarifs .ct-brand:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:var(--bc)}
-#city-tarifs .ct-brand__logo{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--bc);
-  color:#fff;font-weight:800;font-family:"Space Grotesk",sans-serif;margin-bottom:.4rem;font-size:1.05rem}
-#city-tarifs .ct-brand__name{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1.15rem}
-#city-tarifs .ct-brand__count{color:var(--muted);font-size:.88rem}
-#city-tarifs .ct-brand__go{margin-top:.4rem;color:var(--bc);font-weight:600;font-size:.9rem}
+/* pastille d'intro (comme les tags « Hello! / À PROPOS » du site) */
+#city-tarifs .ct-eyebrow{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);border:1px solid var(--ink-30);border-radius:123px;
+  padding:6px 14px;background:transparent}
+#city-tarifs .ct-title{font-family:"Inter Display","Inter",sans-serif;font-weight:400;
+  font-size:clamp(34px,4.6vw,56px);letter-spacing:-.04em;line-height:1.05;margin:18px 0 14px;color:var(--ink)}
+#city-tarifs .ct-lead{color:var(--ink-50);max-width:620px;margin-bottom:34px;font-size:16px}
+#city-tarifs .ct-lead strong{color:var(--ink);font-weight:600}
 
-/* entête marque + retour */
-#city-tarifs .ct-btn{display:inline-flex;align-items:center;gap:.5rem;background:#fff;border:1px solid var(--line-strong);
-  color:var(--text);border-radius:999px;padding:.55rem 1.1rem;font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;
-  transition:all .18s;margin-bottom:1.2rem}
-#city-tarifs .ct-btn:hover{border-color:var(--muted);transform:translateY(-2px)}
-#city-tarifs .ct-head{display:flex;gap:1.6rem;align-items:center;margin-bottom:1.6rem;flex-wrap:wrap}
-#city-tarifs .ct-head__photo{flex-shrink:0;width:140px;height:170px;border-radius:var(--radius);overflow:hidden;
-  background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm);display:grid;place-items:center;position:relative}
-#city-tarifs .ct-head__photo::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--bc)}
-#city-tarifs .ct-head__photo img{width:100%;height:100%;object-fit:contain;padding:.5rem}
+/* cartes marques — cartes blanches arrondies du site */
+#city-tarifs .ct-brands{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:8px}
+#city-tarifs .ct-brand{position:relative;text-align:left;cursor:pointer;background:var(--card);
+  border:1px solid transparent;border-radius:24px;padding:26px 24px;display:flex;flex-direction:column;gap:6px;
+  transition:transform .2s ease,box-shadow .25s ease;overflow:hidden;font:inherit;color:var(--ink)}
+#city-tarifs .ct-brand:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.14)}
+#city-tarifs .ct-brand__logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+  background:#000;color:#fff;font-family:"Inter Display",sans-serif;font-weight:500;font-size:16px;margin-bottom:8px}
+#city-tarifs .ct-brand__name{font-family:"Inter Display",sans-serif;font-weight:400;font-size:24px;letter-spacing:-.02em}
+#city-tarifs .ct-brand__count{color:var(--ink-50);font-size:13.5px}
+#city-tarifs .ct-brand__go{margin-top:10px;color:var(--ink);font-weight:500;font-size:13.5px}
+
+/* entête marque + bouton retour (pill noire du site) */
+#city-tarifs .ct-btn{display:inline-flex;align-items:center;gap:8px;background:#000;color:#fff;
+  border:0;border-radius:154px;padding:14px 24px;font:inherit;font-weight:500;font-size:14px;cursor:pointer;
+  transition:opacity .2s,transform .2s;margin-bottom:26px}
+#city-tarifs .ct-btn:hover{opacity:.82;transform:translateY(-1px)}
+#city-tarifs .ct-head{display:flex;gap:26px;align-items:center;margin-bottom:26px;flex-wrap:wrap}
+#city-tarifs .ct-head__photo{flex-shrink:0;width:132px;height:160px;border-radius:24px;overflow:hidden;
+  background:var(--card);display:grid;place-items:center}
+#city-tarifs .ct-head__photo img{width:100%;height:100%;object-fit:contain;padding:10px}
 #city-tarifs .ct-head>div:last-child{flex:1;min-width:240px}
 
-/* recherche */
-#city-tarifs .ct-bar{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.2rem}
-#city-tarifs .ct-bar input{flex:1;min-width:220px;max-width:340px;background:#fff;border:1px solid var(--line-strong);
-  border-radius:10px;padding:.6rem .9rem;font:inherit;font-size:.95rem;color:var(--text);outline:none}
-#city-tarifs .ct-bar input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+/* recherche — champ pill blanc */
+#city-tarifs .ct-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+#city-tarifs .ct-bar input{flex:1;min-width:220px;max-width:360px;background:var(--card);border:1px solid transparent;
+  border-radius:123px;padding:13px 22px;font:inherit;font-size:14.5px;color:var(--ink);outline:none;transition:.2s}
+#city-tarifs .ct-bar input::placeholder{color:var(--ink-50)}
+#city-tarifs .ct-bar input:focus{border-color:var(--ink-30)}
 
-/* tableau */
-#city-tarifs .ct-tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
-#city-tarifs .ct-table{width:100%;border-collapse:collapse;min-width:720px}
-#city-tarifs .ct-table th,#city-tarifs .ct-table td{padding:.8rem 1rem;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;font-size:.95rem}
-#city-tarifs .ct-table thead th{background:var(--bg-alt);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}
-#city-tarifs .ct-table tbody td:first-child,#city-tarifs .ct-table thead th:first-child{text-align:left;font-weight:600}
-#city-tarifs .ct-model{display:flex;align-items:center;gap:.7rem}
-#city-tarifs .ct-thumb{width:40px;height:48px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:2px;flex-shrink:0}
+/* tableau — carte blanche arrondie */
+#city-tarifs .ct-tablewrap{overflow-x:auto;border-radius:24px;background:var(--card)}
+#city-tarifs .ct-table{width:100%;border-collapse:collapse;min-width:760px}
+#city-tarifs .ct-table th,#city-tarifs .ct-table td{padding:15px 18px;text-align:center;
+  border-bottom:1px solid var(--line);white-space:nowrap;font-size:14.5px}
+#city-tarifs .ct-table thead th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink-50);font-weight:500;border-bottom:1px solid rgba(0,0,0,.14)}
+#city-tarifs .ct-table tbody td:first-child,#city-tarifs .ct-table thead th:first-child{text-align:left;font-weight:500}
+#city-tarifs .ct-model{display:flex;align-items:center;gap:12px}
+#city-tarifs .ct-thumb{width:38px;height:46px;object-fit:contain;background:#f4f4f4;border-radius:10px;padding:2px;flex-shrink:0}
 #city-tarifs .ct-table tbody tr:last-child td{border-bottom:none}
-#city-tarifs .ct-table tbody tr:hover{background:var(--accent-soft)}
-#city-tarifs .ct-table .prix{font-weight:600}
-#city-tarifs .ct-table .na{color:#aab1bb}
-#city-tarifs .ct-reserver{background:#fff;border:1px solid var(--line-strong);color:var(--accent);padding:.34rem .8rem;
-  border-radius:8px;cursor:pointer;font-weight:600;font-size:.84rem;transition:all .18s;font-family:inherit}
-#city-tarifs .ct-reserver:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+#city-tarifs .ct-table tbody tr{transition:background .15s}
+#city-tarifs .ct-table tbody tr:hover{background:#f4f4f4}
+#city-tarifs .ct-table .prix{font-weight:600;font-variant-numeric:tabular-nums}
+#city-tarifs .ct-table .na{color:var(--ink-30)}
+#city-tarifs .ct-reserver{background:#000;color:#fff;border:0;padding:9px 18px;
+  border-radius:154px;cursor:pointer;font-weight:500;font-size:12.5px;transition:opacity .18s;font-family:inherit}
+#city-tarifs .ct-reserver:hover{opacity:.8}
 
-/* notes */
-#city-tarifs .ct-note{color:var(--muted);margin-top:1rem;font-size:.93rem}
-#city-tarifs .ct-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:var(--accent);font-weight:600}
-#city-tarifs .ct-link:hover{color:var(--accent-dark)}
+/* notes + lien page dédiée */
+#city-tarifs .ct-note{color:var(--ink-50);margin-top:16px;font-size:13.5px}
+#city-tarifs .ct-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:var(--ink);font-weight:600;text-decoration:underline}
+#city-tarifs .ct-page{display:inline-flex;align-items:center;gap:8px;margin-top:26px;color:var(--ink);
+  font-weight:500;font-size:14px;text-decoration:none;border:1px solid var(--ink-30);border-radius:123px;padding:11px 20px;transition:.2s;background:transparent}
+#city-tarifs .ct-page:hover{background:#000;color:#fff;border-color:#000}
+
+/* ---- page dédiée /tarifs/ ---- */
+.ctp-body{margin:0;background:#d9d9d9;min-height:100vh}
+.ctp-nav{position:sticky;top:14px;z-index:50;display:flex;justify-content:center;padding:0 16px}
+.ctp-nav__pill{display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);
+  border-radius:123px;padding:10px 12px 10px 22px;box-shadow:0 8px 30px rgba(0,0,0,.10)}
+.ctp-nav__brand{font-family:"Inter Display","Inter",sans-serif;font-weight:500;font-size:17px;letter-spacing:-.02em;color:#000;text-decoration:none}
+.ctp-nav__cta{background:#000;color:#fff;border-radius:154px;padding:11px 20px;font-size:13.5px;font-weight:500;text-decoration:none;font-family:"Inter",sans-serif}
+.ctp-nav__cta:hover{opacity:.82}
+.ctp-foot{text-align:center;color:rgba(0,0,0,.5);font-family:"Inter",sans-serif;font-size:13px;padding:30px 16px 40px}
+.ctp-foot a{color:#000}
+@media(max-width:600px){#city-tarifs .ct-head__photo{width:104px;height:126px}}
