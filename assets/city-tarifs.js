@@ -339,7 +339,7 @@
     var ov=document.createElement("div"); ov.id="ct-menu";
     ov.innerHTML='<div class="ct-menu-card">'+
       '<button class="ct-menu-item" data-menu="top">Accueil</button>'+
-      '<button class="ct-menu-item" data-menu="services">Nos services</button>'+
+      
       '<button class="ct-menu-item" data-menu="rdv">Rendez-vous</button>'+
       '<button class="ct-menu-item" data-menu="apropos">À propos</button>'+
       '<button class="ct-menu-item" data-menu="page-services">Tous les services ↗</button>'+
