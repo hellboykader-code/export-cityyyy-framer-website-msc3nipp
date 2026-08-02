@@ -302,10 +302,23 @@
 
   /* --- sections fantômes du template + « Trusted by Leaders » --- */
   function hideGhosts(){
-    var gt=findLeaf("Get Template");
-    if(gt){ var p=gt,k=0; while(p&&k<8){ var cs=getComputedStyle(p);
-      if(cs.position==="fixed"||cs.position==="absolute"){ p.style.setProperty("display","none","important"); break; }
-      p=p.parentElement;k++; } }
+    ["Get Template","Get a Template, Bonus Included","Design Pitch Deck"].forEach(function(txt){
+      var gt=findLeaf(txt);
+      if(gt){ var p=gt,k=0; while(p&&k<10){ var cs=getComputedStyle(p);
+        if(cs.position==="fixed"||(cs.position==="absolute"&&p.parentElement===document.body)){ p.style.setProperty("display","none","important"); return; }
+        p=p.parentElement;k++; }
+        gt.style.setProperty("display","none","important"); }
+    });
+    /* bouton cadeau flottant du template (petit élément fixed en bas, apparaît/disparaît) */
+    document.querySelectorAll("body *").forEach(function(el){
+      if(el.id==="ct-menu-btn"||el.closest("#ct-menu")||el.closest("#city-tarifs")||el.closest("#city-rdv")) return;
+      if(el.__ctScanned) return; el.__ctScanned=1;
+      var cs=getComputedStyle(el); if(cs.position!=="fixed"||cs.display==="none") return;
+      var r=el.getBoundingClientRect();
+      if(r.width>0&&r.width<150&&r.height>0&&r.height<150&&r.bottom>window.innerHeight-260&&r.top>120){
+        el.style.setProperty("display","none","important");
+      }
+    });
     ["Prix clairs, sans surprise","Senior-level quality"].forEach(function(txt){
       var l=findLeaf(txt); if(l){ var s=sectionOf(l); if(s&&s.id!=="city-tarifs"&&s.id!=="city-rdv") s.style.setProperty("display","none","important"); }
     });
