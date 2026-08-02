@@ -309,6 +309,15 @@
         p=p.parentElement;k++; }
         gt.style.setProperty("display","none","important"); }
     });
+    /* editor bar Framer (crayon + cadeau) : si un vieux script_main en cache la charge encore,
+       supprimer son iframe et son hôte (double filet pour les navigateurs au cache tenace) */
+    document.querySelectorAll('iframe[src*="framer.com/edit"]').forEach(function(f){
+      var h=f; for(var k=0;k<6&&h.parentElement&&h.parentElement!==document.body;k++) h=h.parentElement;
+      (h.parentElement===document.body?h:f).remove();
+    });
+    [].slice.call(document.body.children).forEach(function(el){
+      if(el.shadowRoot&&el.id!=="ct-menu-btn"&&el.id!=="ct-menu") el.style.setProperty("display","none","important");
+    });
     /* bouton cadeau flottant du template (petit élément fixed en bas, apparaît/disparaît) */
     document.querySelectorAll("body *").forEach(function(el){
       if(el.id==="ct-menu-btn"||el.closest("#ct-menu")||el.closest("#city-tarifs")||el.closest("#city-rdv")) return;
