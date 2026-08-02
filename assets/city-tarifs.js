@@ -302,6 +302,10 @@
 
   /* --- sections fantômes du template + « Trusted by Leaders » --- */
   function hideGhosts(){
+    var gt=findLeaf("Get Template");
+    if(gt){ var p=gt,k=0; while(p&&k<8){ var cs=getComputedStyle(p);
+      if(cs.position==="fixed"||cs.position==="absolute"){ p.style.setProperty("display","none","important"); break; }
+      p=p.parentElement;k++; } }
     ["Prix clairs, sans surprise","Senior-level quality"].forEach(function(txt){
       var l=findLeaf(txt); if(l){ var s=sectionOf(l); if(s&&s.id!=="city-tarifs"&&s.id!=="city-rdv") s.style.setProperty("display","none","important"); }
     });
@@ -315,7 +319,7 @@
 
   /* --- menu CityPhone (recouvre le hamburger anglais du template) --- */
   function buildMenu(){
-    if(location.pathname.indexOf('/tarifs')>=0) return;
+    if(location.pathname.indexOf('/tarifs')>=0||location.pathname.indexOf('/services')>=0) return;
     if(document.getElementById("ct-menu-btn")) return;
     var btn=document.createElement("button"); btn.id="ct-menu-btn"; btn.setAttribute("aria-label","Menu");
     btn.innerHTML='<span><span class="l"></span><span class="l"></span></span>';
@@ -326,6 +330,7 @@
       '<button class="ct-menu-item" data-menu="tarifs">Tarifs</button>'+
       '<button class="ct-menu-item" data-menu="rdv">Rendez-vous</button>'+
       '<button class="ct-menu-item" data-menu="apropos">À propos</button>'+
+      '<button class="ct-menu-item" data-menu="page-services">Tous les services ↗</button>'+
       '<button class="ct-menu-item" data-menu="page-tarifs">Tous les tarifs ↗</button>'+
       '<button class="ct-menu-tel" data-menu="rdv">📅 Prendre rendez-vous</button>'+
     '</div>';
@@ -344,6 +349,7 @@
       if(m==="rdv") goRdv();
       if(m==="apropos"){ var a=findLeaf("À propos de City")||findLeaf("Depuis 2015"); if(a) sectionOf(a).scrollIntoView({behavior:"smooth"}); }
       if(m==="page-tarifs") location.assign(BASE+"/tarifs/");
+      if(m==="page-services") location.assign(BASE+"/services/");
     },true);
   }
 
