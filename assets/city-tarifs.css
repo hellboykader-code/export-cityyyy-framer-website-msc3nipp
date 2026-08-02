@@ -140,6 +140,9 @@
 /* l'ancien menu du template (bouton rond + carte Process/Work/Get Template) vit
    dans [data-framer-name="menu"] -> masqué définitivement */
 [data-framer-name="menu"],[data-framer-name="Menu Icon"]{display:none!important}
+/* section « benefits » du template : vide (contenu supprimé dans Framer)
+   -> 1400px de gris entre le rendez-vous et À propos, on la masque */
+[data-framer-name="benefits"]{display:none!important}
 #ct-menu-btn{position:fixed;top:22px;right:22px;z-index:99990;width:60px;height:60px;border-radius:50%;
   background:#fff;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 24px rgba(0,0,0,.14)}
 #ct-menu-btn .l{display:block;width:22px;height:2px;background:#000;margin:3.5px 0;border-radius:2px;transition:.22s}
