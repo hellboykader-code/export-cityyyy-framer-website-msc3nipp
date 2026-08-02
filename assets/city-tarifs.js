@@ -292,6 +292,10 @@
     if(t.indexOf("prendre rendez")===0||t.indexOf("prendre rend")===0||t.indexOf("fixer un rendez")===0){
       e.preventDefault(); e.stopImmediatePropagation(); goRdv();
     }
+    if(t.indexOf("voir nos tarifs")===0||t.indexOf("see recent work")===0||host.getAttribute("href")==="#work"||(host.getAttribute("href")||"").indexOf("#work")>=0){
+      e.preventDefault(); e.stopImmediatePropagation();
+      var ct=document.getElementById("city-tarifs"); if(ct) ct.scrollIntoView({behavior:"smooth",block:"start"});
+    }
   }
   document.addEventListener("click", onAction, true);
   document.addEventListener("click", onCta, true);
@@ -396,6 +400,7 @@
       var t=n.nodeValue; if(!t) continue;
       if(/Hanzo/.test(t)){ n.nodeValue=t.replace(/Hanzo Studio/g,"CityPhone & Vape").replace(/Hanzo, Founder/g,"CityPhone & Vape — Créteil").replace(/Hanzo/g,"CityPhone"); }
       else if(t.indexOf("Prendre rend-vous")>=0){ n.nodeValue=t.replace(/Prendre rend-vous/g,"Prendre rendez-vous"); }
+      else if(t.indexOf("See Recent Work")>=0){ n.nodeValue=t.replace(/See Recent Work/g,"Voir nos tarifs"); }
     }
     if(!/CityPhone/.test(document.title)&&location.pathname.indexOf('/tarifs')<0) document.title="CityPhone & Vape — Réparation de téléphones à Créteil";
   }
