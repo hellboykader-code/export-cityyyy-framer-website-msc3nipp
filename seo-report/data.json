@@ -1,0 +1,200 @@
+[
+  {
+    "url": "https://cityyyy.framer.website/",
+    "score": 85,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "Multiple <h1> tags found (5). Best practice is to have only one."
+      },
+      {
+        "type": "warning",
+        "message": "49 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/bravo",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/bravo",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/fargo",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/fargo",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/haze",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/haze",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/nitro",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/nitro",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/strida",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/strida",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/work/taro",
+    "score": 94,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "3 image(s) missing alt text"
+      }
+    ],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/work/taro",
+      "ogImage": null
+    }
+  },
+  {
+    "url": "https://cityyyy.framer.website/404",
+    "score": 100,
+    "issues": [],
+    "passed": [
+      "Title tag is properly configured",
+      "Meta description is properly configured",
+      "Single H1 heading present",
+      "Canonical URL is set",
+      "Open Graph meta tags present",
+      "Viewport meta tag present",
+      "Language attribute set"
+    ],
+    "meta": {
+      "title": "Hanzo — a Design Craftsman's Portfolio Template",
+      "description": "Hanzo is a free minimal and elegant portfolio template made for product, software, and digital designers to share their work quickly and effectively.",
+      "canonical": "https://cityyyy.framer.website/404",
+      "ogImage": null
+    }
+  }
+]
