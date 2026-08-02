@@ -195,22 +195,45 @@
     sec.querySelectorAll(".ct-reserver,.ct-link").forEach(function(b){ b.addEventListener("click",reserver); });
   }
 
-  /* --- insertion : après la section « Notre méthode » (accueil seulement) --- */
+  /* --- insertion : juste APRÈS la section services (« Hello! Réparation /
+     Rachat / Reconditionnés ») et donc AVANT « Notre méthode ».
+     On remonte jusqu'au bloc dont le parent contient plusieurs sections
+     (fiable même quand l'hydratation enveloppe tout dans un seul wrapper). --- */
+  function sectionOf(el){
+    var p=el;
+    while(p.parentElement){
+      var par=p.parentElement;
+      if(par.children.length>=4) return p;
+      p=par;
+    }
+    return el;
+  }
   function findAnchor(){
-    var els=document.querySelectorAll("h1,h2,h3,h4,p,span");
+    var els=document.querySelectorAll("h1,h2,h3,h4,p,span,div");
+    // 1) repère PRIORITAIRE : la section services (texte unique « Rachat de votre téléphone »)
     for(var i=0;i<els.length;i++){
+      if(els[i].children.length>0) continue;
       var t=(els[i].textContent||"").replace(/\s+/g," ").trim();
-      if(t.indexOf("Notre méthode")===0||t==="Comment ça marche"){
-        var p=els[i], main=document.getElementById("main")||document.body;
-        while(p.parentElement&&p.parentElement!==main) p=p.parentElement;
-        return p;
+      if(t.indexOf("Rachat de votre téléphone")===0) return sectionOf(els[i]);
+    }
+    // 2) repli : insérer avant la section « Notre méthode » (on renvoie la section précédente)
+    for(var j=0;j<els.length;j++){
+      var t2=(els[j].textContent||"").replace(/\s+/g," ").trim();
+      if(t2.indexOf("Notre méthode")===0||t2.indexOf("Comment ça marche")===0){
+        var secM=sectionOf(els[j]);
+        return secM.previousElementSibling||secM;
       }
     }
     return null;
   }
   function ensure(){
     var ex=document.getElementById("city-tarifs");
-    if(ex){ if(!ex.firstChild) render(); return; }
+    if(ex){
+      if(!ex.firstChild) render();
+      var a0=findAnchor();
+      if(a0&&a0.parentNode&&a0.nextElementSibling!==ex&&a0!==ex){ a0.parentNode.insertBefore(ex, a0.nextSibling); }
+      return;
+    }
     var anchor=findAnchor(); if(!anchor||!anchor.parentNode) return;
     var sec=document.createElement("section"); sec.id="city-tarifs";
     anchor.parentNode.insertBefore(sec, anchor.nextSibling);
